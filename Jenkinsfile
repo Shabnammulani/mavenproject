@@ -2,21 +2,29 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Build Utility') {
             steps {
-                git branch: 'master', url: 'https://github.com/Shabnammulani/mavenproject.git'
+                dir('ImpUtilityClass') {
+                    git branch: 'master', url: 'https://github.com/Shabnammulani/ImpUtilityClass.git'
+                    bat 'mvn clean install'
+                }
             }
         }
 
-        stage('Build') {
+        stage('Build Main Project') {
             steps {
-                bat 'mvn clean install'
+                dir('MavenProject') {
+                    git branch: 'master', url: 'https://github.com/Shabnammulani/mavenproject.git'
+                    bat 'mvn clean install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn test'
+                dir('MavenProject') {
+                    bat 'mvn test'
+                }
             }
         }
     }
